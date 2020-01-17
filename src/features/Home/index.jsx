@@ -4,15 +4,20 @@ import { connect } from 'react-redux';
 
 import { homeSelector, initApp as initAppAction } from './Home.sack';
 
+import styles from './styles.css';
+
 const HomePage = ({ initApp, initialized }) => {
   useEffect(() => {
-    initApp();
+    !initialized && initApp();
   });
 
   return (
-    <div>
+    <div className={styles.body}>
       <h3>Hi Honey, I am Home!</h3>
-      <p>app status: {initialized}</p>
+      <p className={styles.p}>
+        by the way, the app{' '}
+        {`is${initialized ? ' initialized' : 'n"t initialized'}`}
+      </p>
     </div>
   );
 };

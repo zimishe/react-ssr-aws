@@ -1,0 +1,12 @@
+body {
+  background-color: #fff;
+}
+
+.body {
+  border: 1px solid #3f3f3f;
+}
+
+.p {
+  color: #000;
+  text-decoration: underline;
+}
