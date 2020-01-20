@@ -7,11 +7,16 @@ import reducers from '../reducers';
 
 const sagaMiddleware = createSagaMiddleware();
 
-const store = createStore(
-  reducers,
-  composeWithDevTools(applyMiddleware(sagaMiddleware)),
-);
+const createAppStore = (preloadedState = {}) => {
+  const store = createStore(
+    reducers,
+    preloadedState,
+    composeWithDevTools(applyMiddleware(sagaMiddleware)),
+  );
 
-sagaMiddleware.run(sagas);
+  sagaMiddleware.run(sagas);
 
-export default store;
+  return store;
+};
+
+export default createAppStore;

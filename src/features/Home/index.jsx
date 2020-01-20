@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -7,17 +7,21 @@ import { homeSelector, initApp as initAppAction } from './Home.sack';
 import styles from './styles.css';
 
 const HomePage = ({ initApp, initialized }) => {
-  useEffect(() => {
-    !initialized && initApp();
-  });
+  const onButtonClick = () => {
+    initApp();
+  };
 
   return (
     <div className={styles.body}>
       <h3>Hi Honey, I am Home!</h3>
-      <p className={styles.p}>
+      {/* <p className={styles.p}> */}
+      <p>
         by the way, the app{' '}
         {`is${initialized ? ' initialized' : 'n"t initialized'}`}
       </p>
+      <button type="button" onClick={onButtonClick}>
+        button
+      </button>
     </div>
   );
 };
