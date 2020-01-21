@@ -14,8 +14,7 @@ const HomePage = ({ initApp, initialized }) => {
   return (
     <div className={styles.body}>
       <h3>Hi Honey, I am Home!</h3>
-      {/* <p className={styles.p}> */}
-      <p>
+      <p className={styles.p}>
         by the way, the app{' '}
         {`is${initialized ? ' initialized' : 'n"t initialized'}`}
       </p>

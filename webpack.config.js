@@ -2,20 +2,30 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 const path = require('path');
 
+const PUBLIC_PATH = '/dist/';
+
 const PORT = 3000;
 
 module.exports = [
   {
+    plugins: [
+      new HtmlWebPackPlugin({
+        template: './src/index.html',
+        filename: './index.html',
+      }),
+    ],
+    target: 'web',
+    mode: 'development', // TODO: add mode handling
     entry: {
       client: './src/index.js',
     },
     output: {
       path: path.join(__dirname, '/dist'),
-      publicPath: `http://localhost:${PORT}/`,
+      publicPath: PUBLIC_PATH,
       filename: '[name].bundle.js',
     },
     devServer: {
-      publicPath: `http://localhost:${PORT}/`,
+      publicPath: PUBLIC_PATH,
       contentBase: path.join(__dirname, 'dist/'),
       port: PORT,
       hot: true,
@@ -53,12 +63,6 @@ module.exports = [
         },
       ],
     },
-    plugins: [
-      new HtmlWebPackPlugin({
-        template: './src/index.html',
-        filename: './index.html',
-      }),
-    ],
   },
   {
     target: 'node',
@@ -73,8 +77,8 @@ module.exports = [
       net: 'empty',
     },
     output: {
-      path: path.resolve(__dirname),
-      filename: '[name].js',
+      path: path.join(__dirname, '/dist'),
+      filename: '[name].bundle.js',
     },
     module: {
       rules: [
@@ -86,21 +90,21 @@ module.exports = [
           },
           use: ['babel-loader', 'eslint-loader'],
         },
-        // {
-        //   test: /\.css$/,
-        //   use: [
-        //     'style-loader',
-        //     {
-        //       loader: 'css-loader',
-        //       options: {
-        //         importLoaders: 1,
-        //         modules: true,
-        //       },
-        //     },
-        //   ],
-        // },
+        {
+          test: /\.css$/,
+          use: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 1,
+                modules: true,
+              },
+            },
+          ],
+        },
       ],
     },
-    externals: ['express'],
+    externals: { express: 'commonjs express' },
   },
 ];

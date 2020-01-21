@@ -9,6 +9,7 @@ import createAppStore from '../../src/store/configureStore';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
+  // console.log('html', res.locals.webpackStats.toJson().assetsByChunkName);
   const store = createAppStore();
 
   const html = renderToString(

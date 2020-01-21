@@ -1,4 +1,5 @@
 {
+  "plugins": ["css-modules-transform"],
   "presets": [
     ["@babel/preset-env", { "targets": { "node": "current" } }],
     "@babel/preset-react"

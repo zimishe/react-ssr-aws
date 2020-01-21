@@ -5,8 +5,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import createAppStore from './store/configureStore';
 import App from './App';
 
-const preloadedState = global.window.__PRELOADED_STATE__;
-delete global.window.__PRELOADED_STATE__;
+const preloadedState = global.window && global.window.__PRELOADED_STATE__;
+global.window && delete global.window.__PRELOADED_STATE__;
 
 const store = createAppStore(preloadedState);
 
