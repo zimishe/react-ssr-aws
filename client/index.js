@@ -3,8 +3,8 @@ import { hydrate, render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 // import StyleContext from 'isomorphic-style-loader/StyleContext';
-import createAppStore from './store/configureStore';
-import Routes from './routes';
+import createAppStore from '../src/store/configureStore';
+import Routes from '../src/routes';
 
 // const insertCss = (...styles) => {
 //   const removeCss = styles.map(style =>

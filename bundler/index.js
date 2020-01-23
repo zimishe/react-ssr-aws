@@ -4,15 +4,14 @@ const compression = require('compression');
 const webpack = require('webpack');
 const wdm = require('webpack-dev-middleware');
 const whm = require('webpack-hot-middleware');
-const config = require('../webpack.config');
+const config = require('../client/webpack.config');
 
-const finalConfig = config[0];
 const {
   output: { publicPath },
   stats,
-} = finalConfig;
+} = config;
 
-const compiler = webpack(finalConfig);
+const compiler = webpack(config);
 const app = express();
 
 app.use(compression());
