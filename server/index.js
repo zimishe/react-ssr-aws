@@ -11,7 +11,7 @@ const app = express();
 app.use(compression());
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('dist/'));
+  app.use('/dist', express.static('client/dist/'));
 } else {
   app.get('/dist/*', proxy(process.env.BUNDLER_URL));
   app.get('/__webpack_hmr', ({ path: webpackPath }, res) =>

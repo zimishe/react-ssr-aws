@@ -4,11 +4,13 @@
   "description": "serer-side-rendering-sandbox",
   "main": "index.js",
   "scripts": {
-    "server": "node dist/server.bundle.js",
+    "build": "concurrently --kill-others-on-fail npm:build:client npm:build:server",
+    "start": "concurrently --kill-others-on-fail npm:bundler npm:build:server",
     "build:server": "webpack --config server/webpack.config.js",
+    "build:client": "webpack --config client/webpack.config.js",
     "bundler": "node bundler client/webpack.config.js",
-    "dev": "concurrently --kill-others \"npm run bundler\" \"npm run build:server\" \"npm run server\"",
-    "build": "webpack --mode production"
+    "dev": "concurrently --kill-others \"npm run bundler\" \"npm run build:server\"",
+    "production": "node server/dist/server.bundle.js"
   },
   "author": "yevhen",
   "license": "ISC",
@@ -36,8 +38,10 @@
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.9.0",
     "prettier": "^1.19.1",
+    "start-server-webpack-plugin": "^2.2.5",
     "style-loader": "^1.1.2",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "webpack-stats-plugin": "^0.3.1"
   },
   "dependencies": {
     "axios": "^0.19.1",

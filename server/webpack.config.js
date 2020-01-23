@@ -1,10 +1,11 @@
 require('dotenv').config();
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const StartServerPlugin = require('start-server-webpack-plugin');
 const path = require('path');
 
 module.exports = {
   target: 'node',
-  watch: true,
+  watch: process.env.NODE_ENV === 'development',
   mode: process.env.NODE_ENV,
   entry: {
     server: './server/index.js',
@@ -20,6 +21,16 @@ module.exports = {
     path: path.join(__dirname, '/dist'),
     filename: '[name].bundle.js',
   },
+  plugins: [].concat(
+    process.env.NODE_ENV === 'development' && Boolean(process.env.SERVER_WATCH)
+      ? [
+          new StartServerPlugin({
+            name: 'server.bundle.js',
+            nodeArgs: ['--inspect'],
+          }),
+        ]
+      : [],
+  ),
   module: {
     rules: [
       {

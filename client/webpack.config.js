@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const { StatsWriterPlugin } = require('webpack-stats-plugin');
 require('dotenv').config();
 
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -9,19 +10,23 @@ const path = require('path');
 const PUBLIC_PATH = '/dist/';
 
 module.exports = {
-  watch: true,
-  plugins: [
-    new HtmlWebPackPlugin({
-      template: './src/index.html',
-      filename: './index.html',
-    }),
-    process.env.NODE_ENV === 'development' &&
-      new webpack.HotModuleReplacementPlugin(),
-    // new MiniCssExtractPlugin({
-    //   filename: '[name].css',
-    //   chunkFilename: '[id].css',
-    // }),
-  ],
+  watch: process.env.NODE_ENV === 'development',
+  plugins: [].concat(
+    [
+      new HtmlWebPackPlugin({
+        template: './src/index.html',
+        filename: './index.html',
+      }),
+    ],
+    process.env.NODE_ENV === 'development'
+      ? [new webpack.HotModuleReplacementPlugin()]
+      : [],
+    process.env.NODE_ENV === 'production' ? [new StatsWriterPlugin()] : [],
+  ),
+  // new MiniCssExtractPlugin({
+  //   filename: '[name].css',
+  //   chunkFilename: '[id].css',
+  // }),
   target: 'web',
   mode: process.env.NODE_ENV,
   entry: {
@@ -29,7 +34,7 @@ module.exports = {
       process.env.NODE_ENV === 'development' &&
         'webpack-hot-middleware/client?reload=true',
       './client',
-    ],
+    ].filter(Boolean),
   },
   output: {
     path: path.join(__dirname, '/dist'),
