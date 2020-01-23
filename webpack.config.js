@@ -1,34 +1,41 @@
+const webpack = require('webpack');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+require('dotenv').config();
+
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const path = require('path');
 
 const PUBLIC_PATH = '/dist/';
 
-const PORT = 3000;
-
 module.exports = [
   {
+    watch: true,
     plugins: [
       new HtmlWebPackPlugin({
         template: './src/index.html',
         filename: './index.html',
       }),
+      process.env.NODE_ENV === 'development' &&
+        new webpack.HotModuleReplacementPlugin(),
+      // new MiniCssExtractPlugin({
+      //   filename: '[name].css',
+      //   chunkFilename: '[id].css',
+      // }),
     ],
     target: 'web',
-    mode: 'development', // TODO: add mode handling
+    mode: process.env.NODE_ENV,
     entry: {
-      client: './src/index.js',
+      client: [
+        process.env.NODE_ENV === 'development' &&
+          'webpack-hot-middleware/client?reload=true',
+        './src/index.js',
+      ],
     },
     output: {
       path: path.join(__dirname, '/dist'),
       publicPath: PUBLIC_PATH,
       filename: '[name].bundle.js',
-    },
-    devServer: {
-      publicPath: PUBLIC_PATH,
-      contentBase: path.join(__dirname, 'dist/'),
-      port: PORT,
-      hot: true,
     },
     module: {
       rules: [
@@ -38,12 +45,32 @@ module.exports = [
           resolve: {
             extensions: ['.js', '.jsx'],
           },
-          use: ['babel-loader', 'eslint-loader'],
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  ['@babel/preset-env', { targets: { node: 'current' } }],
+                  '@babel/preset-react',
+                ],
+                // plugins: ['css-modules-transform'],
+              },
+            },
+            'eslint-loader',
+          ],
         },
         {
           test: /\.css$/,
           use: [
+            // 'isomorphic-style-loader',
             'style-loader',
+            // {
+            //   loader: MiniCssExtractPlugin.loader,
+            //   options: {
+            //     hmr: true,
+            //     publicPath: PUBLIC_PATH,
+            //   },
+            // },
             {
               loader: 'css-loader',
               options: {
@@ -66,6 +93,8 @@ module.exports = [
   },
   {
     target: 'node',
+    watch: true,
+    mode: process.env.NODE_ENV,
     entry: {
       server: './server/index.js',
     },
@@ -88,17 +117,38 @@ module.exports = [
           resolve: {
             extensions: ['.js', '.jsx'],
           },
-          use: ['babel-loader', 'eslint-loader'],
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  ['@babel/preset-env', { targets: { node: 'current' } }],
+                  '@babel/preset-react',
+                ],
+                plugins: ['css-modules-transform'],
+              },
+            },
+            'eslint-loader',
+          ],
+          // use: ['babel-loader', 'eslint-loader'],
         },
         {
           test: /\.css$/,
           use: [
-            'style-loader',
+            'isomorphic-style-loader',
+            // 'style-loader',
+            // {
+            //   loader: MiniCssExtractPlugin.loader,
+            //   options: {
+            //     hmr: true,
+            //     publicPath: PUBLIC_PATH,
+            //   },
+            // },
             {
               loader: 'css-loader',
               options: {
                 importLoaders: 1,
-                modules: true,
+                // modules: true,
               },
             },
           ],

@@ -1,21 +1,34 @@
 import express from 'express';
+import axios from 'axios';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { StaticRouter as Router } from 'react-router-dom';
 import { renderToString } from 'react-dom/server';
-import App from '../../src/App';
+import StyleContext from 'isomorphic-style-loader/StyleContext';
+// import path from 'path';
+import Routes from '../../src/routes';
 import createAppStore from '../../src/store/configureStore';
+
+const normalizeAssets = assets => (Array.isArray(assets) ? assets : [assets]);
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-  // console.log('html', res.locals.webpackStats.toJson().assetsByChunkName);
+router.get('*', async (req, res) => {
+  const {
+    data: { assetsByChunkName, publicPath },
+  } = await axios.get(process.env.BUNDLER_URL);
+
+  const css = new Set();
+  const insertCss = (...styles) =>
+    styles.forEach(style => css.add(style._getCss()));
   const store = createAppStore();
 
   const html = renderToString(
     <Provider store={store}>
       <Router>
-        <App />
+        <StyleContext.Provider value={{ insertCss }}>
+          <Routes />
+        </StyleContext.Provider>
       </Router>
     </Provider>,
   );
@@ -39,7 +52,10 @@ router.get('/', async (req, res) => {
             '\\u003c',
           )}
         </script>
-        <script src="./dist/client.bundle.js"></script>
+        ${normalizeAssets(assetsByChunkName.client)
+          .filter(filePath => filePath.endsWith('.js'))
+          .map(filePath => `<script src="${publicPath}${filePath}"></script>`)
+          .join('\n')}
     </body>
   </html>
 `;

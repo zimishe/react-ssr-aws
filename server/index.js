@@ -1,34 +1,28 @@
 import express from 'express';
+import morgan from 'morgan';
+import proxy from 'express-http-proxy';
 import compression from 'compression';
-import router from './routes';
+import renderer from './renderer';
 
-import config from '../webpack.config';
+require('dotenv').config();
 
-const webpack = require('webpack');
-const wdm = require('webpack-dev-middleware');
-const whm = require('webpack-hot-middleware');
-
-const finalConfig = config[0];
-const {
-  output: { publicPath },
-} = finalConfig;
-
-const compiler = webpack(finalConfig);
 const app = express();
 
 app.use(compression());
-app.use(
-  wdm(compiler, {
-    publicPath,
-    serverSideRender: true,
-  }),
-);
-app.use(whm(compiler));
 
-app.use(express.static('../dist'));
-app.use('/', router);
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('dist/'));
+} else {
+  app.get('/dist/*', proxy(process.env.BUNDLER_URL));
+  app.get('/__webpack_hmr', ({ path: webpackPath }, res) =>
+    res.redirect(301, `${process.env.BUNDLER_URL}${webpackPath}`),
+  );
+}
 
-const port = process.env.PORT || 3000;
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'tiny' : 'dev'));
+app.use(renderer);
+
+const port = process.env.SERVER_PORT;
 app.listen(port, function listenHandler() {
-  console.info(`Running on ${port}...`);
+  console.info(`Server listening on ${port}...`);
 });

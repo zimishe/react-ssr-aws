@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+// import withStyles from 'isomorphic-style-loader/withStyles';
 
 import { homeSelector, initApp as initAppAction } from './Home.sack';
 
@@ -38,4 +40,7 @@ HomePage.propTypes = {
   initApp: PropTypes.func,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
+export default compose(
+  // withStyles(styles),
+  connect(mapStateToProps, mapDispatchToProps),
+)(HomePage);
