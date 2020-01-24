@@ -3,7 +3,7 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 require('dotenv').config();
 
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const path = require('path');
 
@@ -21,12 +21,15 @@ module.exports = {
     process.env.NODE_ENV === 'development'
       ? [new webpack.HotModuleReplacementPlugin()]
       : [],
-    process.env.NODE_ENV === 'production' ? [new StatsWriterPlugin()] : [],
+    process.env.NODE_ENV === 'production'
+      ? [
+          new StatsWriterPlugin(),
+          new MiniCssExtractPlugin({
+            filename: '[name]-[chunkhash].css',
+          }),
+        ]
+      : [],
   ),
-  // new MiniCssExtractPlugin({
-  //   filename: '[name].css',
-  //   chunkFilename: '[id].css',
-  // }),
   target: 'web',
   mode: process.env.NODE_ENV,
   entry: {
@@ -57,7 +60,6 @@ module.exports = {
                 ['@babel/preset-env', { targets: { node: 'current' } }],
                 '@babel/preset-react',
               ],
-              // plugins: ['css-modules-transform'],
             },
           },
           'eslint-loader',
@@ -66,20 +68,16 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          // 'isomorphic-style-loader',
-          'style-loader',
-          // {
-          //   loader: MiniCssExtractPlugin.loader,
-          //   options: {
-          //     hmr: true,
-          //     publicPath: PUBLIC_PATH,
-          //   },
-          // },
+          process.env.NODE_ENV === 'production'
+            ? MiniCssExtractPlugin.loader
+            : 'style-loader',
           {
             loader: 'css-loader',
             options: {
               importLoaders: 1,
-              modules: true,
+              modules: {
+                localIdentName: '[name]__[local]___[hash:base64:5]',
+              },
             },
           },
         ],

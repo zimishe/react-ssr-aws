@@ -6,7 +6,6 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { StaticRouter as Router } from 'react-router-dom';
 import { renderToString } from 'react-dom/server';
-import StyleContext from 'isomorphic-style-loader/StyleContext';
 import Routes from '../../src/routes';
 import config from '../../client/webpack.config';
 import createAppStore from '../../src/store/configureStore';
@@ -44,17 +43,12 @@ router.get('*', async (req, res) => {
     : await axios.get(process.env.BUNDLER_URL);
   const { assetsByChunkName, publicPath } = data;
 
-  const css = new Set();
-  const insertCss = (...styles) =>
-    styles.forEach(style => css.add(style._getCss()));
   const store = createAppStore();
 
   const html = renderToString(
     <Provider store={store}>
       <Router>
-        <StyleContext.Provider value={{ insertCss }}>
-          <Routes />
-        </StyleContext.Provider>
+        <Routes />
       </Router>
     </Provider>,
   );
@@ -67,6 +61,19 @@ router.get('*', async (req, res) => {
       <head>
         <meta charset="utf-8" />
         <title>server side beatch</title>
+        ${normalizeAssets(assetsByChunkName ? assetsByChunkName.client : [])
+          .filter(path => path.endsWith('.css'))
+          .map(
+            path =>
+              `<link
+              charSet="UTF-8"
+              href=${`${publicPath}${path}`}
+              key=${path}
+              media="screen, projection"
+              rel="stylesheet"
+              type="text/css"
+            />`,
+          )}
       </head>
       <body>
         <div id="root">${html}</div>
@@ -78,8 +85,8 @@ router.get('*', async (req, res) => {
             ).replace(/</g, '\\u003c')}
           </script>
           ${normalizeAssets(assetsByChunkName ? assetsByChunkName.client : [])
-            .filter(filePath => filePath.endsWith('.js'))
-            .map(filePath => `<script src="${publicPath}${filePath}"></script>`)
+            .filter(path => path.endsWith('.js'))
+            .map(path => `<script src="${publicPath}${path}"></script>`)
             .join('\n')}
       </body>
     </html>

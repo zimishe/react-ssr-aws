@@ -1,5 +1,4 @@
 require('dotenv').config();
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const StartServerPlugin = require('start-server-webpack-plugin');
 const path = require('path');
 
@@ -52,25 +51,14 @@ module.exports = {
           },
           'eslint-loader',
         ],
-        // use: ['babel-loader', 'eslint-loader'],
       },
       {
         test: /\.css$/,
         use: [
-          'isomorphic-style-loader',
-          // 'style-loader',
-          // {
-          //   loader: MiniCssExtractPlugin.loader,
-          //   options: {
-          //     hmr: true,
-          //     publicPath: PUBLIC_PATH,
-          //   },
-          // },
           {
             loader: 'css-loader',
             options: {
               importLoaders: 1,
-              // modules: true,
             },
           },
         ],
