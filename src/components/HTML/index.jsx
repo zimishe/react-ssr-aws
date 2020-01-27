@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { StaticRouter, BrowserRouter } from 'react-router-dom';
 import Routes from '../../routes';
+import ServerHelmet from '../ServerHelmet';
 
 const normalizeAssets = assets => (Array.isArray(assets) ? assets : [assets]);
 
@@ -26,6 +27,7 @@ const HTML = ({
   return type === 'server' ? (
     <html lang="en">
       <head>
+        <ServerHelmet />
         <meta charSet="utf-8" />
         {normalizeAssets(assetsByChunkName ? assetsByChunkName.client : [])
           .filter(path => path.endsWith('.css'))

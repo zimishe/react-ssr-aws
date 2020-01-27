@@ -1,8 +1,8 @@
+import React from 'react';
 import express from 'express';
 import axios from 'axios';
 import fs from 'fs';
 import util from 'util';
-import React from 'react';
 import { renderToString } from 'react-dom/server';
 import createAppStore from '../../src/store/configureStore';
 import config from '../../client/webpack.config';
