@@ -1,18 +1,26 @@
-import { put, takeLatest } from 'redux-saga/effects';
+import { put, call, takeEvery } from 'redux-saga/effects';
+import axios from 'axios';
+
+import { SUCCEED } from '../../constants/actions';
 
 export const initialState = {
   error: '',
   initialized: false,
+  data: [],
 };
+
+export const LOAD_HOME_DATA = 'LOAD_HOME_DATA';
+export const LOAD_HOME_DATA_SUCCEED = `${LOAD_HOME_DATA}_${SUCCEED}`;
 
 export const homeSelector = state => state.home;
 
-export const home = (state = initialState, { type }) => {
+export const home = (state = initialState, { type, payload }) => {
   switch (type) {
-    case 'INIT_APP_SUCCEED':
+    case LOAD_HOME_DATA_SUCCEED:
       return {
         ...state,
         initialized: true,
+        data: payload.data,
       };
 
     default:
@@ -20,20 +28,30 @@ export const home = (state = initialState, { type }) => {
   }
 };
 
-export const initApp = () => ({ type: 'INIT_APP' });
-export const initAppSucceed = message => ({
-  type: 'INIT_APP_SUCCEED',
-  message,
+export const loadHomeData = () => ({ type: LOAD_HOME_DATA });
+export const loadHomeDataSucceed = payload => ({
+  type: LOAD_HOME_DATA_SUCCEED,
+  payload,
 });
 
-export function* initAppSaga() {
+export function* loadHomeDataSaga() {
   try {
-    yield put(initAppSucceed('init successful'));
+    const { data } = yield call(axios, {
+      url: 'https://api.shutterstock.com/v2/images/categories',
+      method: 'GET',
+      auth: {
+        username: process.env.SHUTTERSTOCK_KEY,
+        password: process.env.SHUTTERSTOCK_SECRET,
+      },
+      params: { language: 'en' },
+    });
+    console.log('dt', data);
+    yield put(loadHomeDataSucceed(data));
   } catch (e) {
     console.error('failed');
   }
 }
 
-export function* watchInitAppSaga() {
-  yield takeLatest('INIT_APP', initAppSaga);
+export function* watchLoadHomeDataSaga() {
+  yield takeEvery(LOAD_HOME_DATA, loadHomeDataSaga);
 }

@@ -1,7 +1,7 @@
 const webpack = require('webpack');
+const dotenv = require('dotenv');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
-require('dotenv').config();
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -9,10 +9,24 @@ const path = require('path');
 
 const PUBLIC_PATH = '/dist/';
 
+const { parsed: envKeys = {} } = dotenv.config();
+
 module.exports = {
   watch: process.env.NODE_ENV === 'development',
   plugins: [].concat(
     [
+      new webpack.DefinePlugin({
+        'process.env': {
+          SERVER: false,
+          ...Object.keys(envKeys).reduce(
+            (destination, key) =>
+              Object.assign(destination, {
+                [key]: JSON.stringify(envKeys[key]),
+              }),
+            {},
+          ),
+        },
+      }),
       new HtmlWebPackPlugin({
         template: './src/index.html',
         filename: './index.html',

@@ -10,3 +10,14 @@ body {
   color: #000;
   text-decoration: underline;
 }
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  width: 300px;
+}
+
+.category {
+  width: 100%;
+  padding: 3px 4px;
+}

@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime';
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from 'redux-saga';
+import createSagaMiddleware, { END } from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import sagas from '../sagas';
 import reducers from '../reducers';
@@ -15,6 +15,8 @@ const createAppStore = (preloadedState = {}) => {
   );
 
   sagaMiddleware.run(sagas);
+  store.runSaga = sagaMiddleware.run;
+  store.close = () => store.dispatch(END);
 
   return store;
 };
