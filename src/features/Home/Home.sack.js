@@ -34,7 +34,7 @@ export const loadHomeDataSucceed = payload => ({
   payload,
 });
 
-export function* loadHomeDataSaga() {
+export function* loadHomeDataSaga({ payload }) {
   try {
     const { data } = yield call(axios, {
       url: 'https://api.shutterstock.com/v2/images/categories',
@@ -43,9 +43,8 @@ export function* loadHomeDataSaga() {
         username: process.env.SHUTTERSTOCK_KEY,
         password: process.env.SHUTTERSTOCK_SECRET,
       },
-      params: { language: 'en' },
+      params: { language: payload.language },
     });
-    console.log('dt', data);
     yield put(loadHomeDataSucceed(data));
   } catch (e) {
     console.error('failed');

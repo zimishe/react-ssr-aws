@@ -6,6 +6,8 @@ import renderer from './renderer';
 
 require('dotenv').config();
 
+let middleware = renderer;
+
 const app = express();
 
 app.use(compression());
@@ -20,7 +22,13 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'tiny' : 'dev'));
-app.use(renderer);
+app.get('*', (req, res, next) => middleware(req, res, next));
+
+if (module.hot) {
+  module.hot.accept('./renderer', () => {
+    middleware = renderer;
+  });
+}
 
 const port = process.env.SERVER_PORT;
 app.listen(port, function listenHandler() {

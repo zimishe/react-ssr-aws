@@ -43,6 +43,6 @@ HomePage.propTypes = {
   data: PropTypes.array,
 };
 
-HomePage.preload = () => [[loadHomeDataSaga]];
+HomePage.preload = () => [[loadHomeDataSaga, { language: 'en' }]];
 
 export default connect(mapStateToProps)(HomePage);

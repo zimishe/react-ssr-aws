@@ -1,5 +1,4 @@
 import React from 'react';
-import express from 'express';
 import axios from 'axios';
 import { all } from 'redux-saga/effects';
 import fs from 'fs';
@@ -15,12 +14,7 @@ const readFile = util.promisify(fs.readFile);
 
 export const waitAll = sagas =>
   function* genTasks() {
-    yield all(
-      sagas.map(([saga]) => {
-        return saga();
-        // return fork(action, ...params);
-      }),
-    );
+    yield all(sagas.map(([saga, payload]) => saga({ payload })));
   };
 
 const getProductionAssets = async () => {
@@ -42,9 +36,7 @@ const getProductionAssets = async () => {
   };
 };
 
-const router = express.Router();
-
-router.get('*', async (req, res) => {
+const renderer = async (req, res) => {
   const isProduction = process.env.NODE_ENV === 'production';
   const store = createAppStore();
 
@@ -75,6 +67,6 @@ router.get('*', async (req, res) => {
   } else {
     res.status(404).send('Not found');
   }
-});
+};
 
-export default router;
+export default renderer;
