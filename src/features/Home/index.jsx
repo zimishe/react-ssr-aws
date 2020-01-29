@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 
 import { homeSelector, loadHomeDataSaga } from './Home.sack';
+import BetImage from '../../assets/images/bet.jpg';
 
 import styles from './styles.css';
 
@@ -15,6 +16,7 @@ const HomePage = ({ initialized, data }) => {
       </Helmet>
       <div className={styles.body}>
         <h3>Hi Honey, I am Home!</h3>
+        <img src={BetImage} alt="" />
         <p className={styles.p}>
           by the way, the app{' '}
           {`is${initialized ? ' initialized' : 'n"t initialized'}`}
