@@ -1,6 +1,6 @@
 // const StartServerPlugin = require('start-server-webpack-plugin');
-const TerserJSPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+// const TerserJSPlugin = require('terser-webpack-plugin');
+// const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 const dotenv = require('dotenv');
@@ -41,17 +41,17 @@ module.exports = {
     //     ]
     //   : [],
   ),
-  optimization: {
-    minimize: true,
-    minimizer: [
-      process.env.NODE_ENV === 'production' &&
-        new TerserJSPlugin({
-          parallel: true,
-          sourceMap: true,
-        }),
-      process.env.NODE_ENV === 'production' && new OptimizeCSSAssetsPlugin(),
-    ].filter(Boolean),
-  },
+  // optimization: {
+  //   minimize: true,
+  //   minimizer: [
+  //     process.env.NODE_ENV === 'production' &&
+  //       new TerserJSPlugin({
+  //         parallel: true,
+  //         sourceMap: true,
+  //       }),
+  //     process.env.NODE_ENV === 'production' && new OptimizeCSSAssetsPlugin(),
+  //   ].filter(Boolean),
+  // },
   module: {
     rules: [
       {
