@@ -1,6 +1,6 @@
-// const StartServerPlugin = require('start-server-webpack-plugin');
-// const TerserJSPlugin = require('terser-webpack-plugin');
-// const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const StartServerPlugin = require('start-server-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 const dotenv = require('dotenv');
@@ -10,10 +10,10 @@ const { parsed: envKeys = {} } = dotenv.config();
 module.exports = {
   target: 'node',
   watch: process.env.NODE_ENV === 'development',
-  // bail: process.env.NODE_ENV === 'production',
+  bail: process.env.NODE_ENV === 'production',
   mode: process.env.NODE_ENV,
   entry: {
-    server: ['@babel/polyfill', './server/index.js'].filter(Boolean),
+    server: './server/index.js',
   },
   output: {
     path: path.join(__dirname, '/dist'),
@@ -32,26 +32,26 @@ module.exports = {
         ),
       },
     }),
-    // process.env.NODE_ENV === 'development' && Boolean(process.env.SERVER_WATCH)
-    //   ? [
-    //       new StartServerPlugin({
-    //         name: 'server.bundle.js',
-    //         nodeArgs: ['--inspect'],
-    //       }),
-    //     ]
-    //   : [],
+    process.env.NODE_ENV === 'development' && Boolean(process.env.SERVER_WATCH)
+      ? [
+          new StartServerPlugin({
+            name: 'server.bundle.js',
+            nodeArgs: ['--inspect'],
+          }),
+        ]
+      : [],
   ),
-  // optimization: {
-  //   minimize: true,
-  //   minimizer: [
-  //     process.env.NODE_ENV === 'production' &&
-  //       new TerserJSPlugin({
-  //         parallel: true,
-  //         sourceMap: true,
-  //       }),
-  //     process.env.NODE_ENV === 'production' && new OptimizeCSSAssetsPlugin(),
-  //   ].filter(Boolean),
-  // },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      process.env.NODE_ENV === 'production' &&
+        new TerserJSPlugin({
+          parallel: true,
+          sourceMap: true,
+        }),
+      process.env.NODE_ENV === 'production' && new OptimizeCSSAssetsPlugin(),
+    ].filter(Boolean),
+  },
   module: {
     rules: [
       {
