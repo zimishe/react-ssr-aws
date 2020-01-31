@@ -13,7 +13,7 @@ module.exports = {
   // bail: process.env.NODE_ENV === 'production',
   mode: process.env.NODE_ENV,
   entry: {
-    server: './server/index.js',
+    server: ['@babel/polyfill', './server/index.js'].filter(Boolean),
   },
   output: {
     path: path.join(__dirname, '/dist'),
