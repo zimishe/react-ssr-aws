@@ -1,4 +1,4 @@
-const StartServerPlugin = require('start-server-webpack-plugin');
+// const StartServerPlugin = require('start-server-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const path = require('path');
@@ -10,7 +10,7 @@ const { parsed: envKeys = {} } = dotenv.config();
 module.exports = {
   target: 'node',
   watch: process.env.NODE_ENV === 'development',
-  bail: process.env.NODE_ENV === 'production',
+  // bail: process.env.NODE_ENV === 'production',
   mode: process.env.NODE_ENV,
   entry: {
     server: './server/index.js',
@@ -32,14 +32,14 @@ module.exports = {
         ),
       },
     }),
-    process.env.NODE_ENV === 'development' && Boolean(process.env.SERVER_WATCH)
-      ? [
-          new StartServerPlugin({
-            name: 'server.bundle.js',
-            nodeArgs: ['--inspect'],
-          }),
-        ]
-      : [],
+    // process.env.NODE_ENV === 'development' && Boolean(process.env.SERVER_WATCH)
+    //   ? [
+    //       new StartServerPlugin({
+    //         name: 'server.bundle.js',
+    //         nodeArgs: ['--inspect'],
+    //       }),
+    //     ]
+    //   : [],
   ),
   optimization: {
     minimize: true,
