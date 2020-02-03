@@ -6,8 +6,8 @@
   "scripts": {
     "build": "concurrently --kill-others-on-fail npm:build:client npm:build:server",
     "start": "concurrently --kill-others-on-fail npm:bundler npm:build:server",
-    "build:server": "webpack --config server/webpack.config.js",
-    "build:client": "webpack --config client/webpack.config.js",
+    "build:server": "NODE_OPTIONS=--max-old-space-size=4096 webpack --config server/webpack.config.js",
+    "build:client": "NODE_OPTIONS=--max-old-space-size=4096 webpack --config client/webpack.config.js",
     "bundler": "node bundler client/webpack.config.js",
     "dev": "concurrently --kill-others \"npm run bundler\" \"npm run build:server\"",
     "production": "node server/dist/server.bundle.js"
