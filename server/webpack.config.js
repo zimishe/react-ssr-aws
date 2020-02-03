@@ -5,11 +5,7 @@ const path = require('path');
 const webpack = require('webpack');
 const dotenv = require('dotenv');
 
-const dotenvPath = process.env.DOTENV_PATH
-  ? path.resolve(process.cwd(), process.env.DOTENV_PATH)
-  : path.resolve(process.cwd(), '.env');
-
-const { parsed: envKeys = {} } = dotenv.config({ path: dotenvPath });
+const { parsed: envKeys = {} } = dotenv.config();
 
 module.exports = {
   target: 'node',
